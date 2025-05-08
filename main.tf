@@ -110,3 +110,21 @@ resource "google_dns_record_set" "example_a_record" {
   ttl          = 300
   rrdatas      = [google_compute_global_address.example_ip.address]
 }
+# Cloud SQL Instance
+resource "google_sql_database_instance" "db" {
+  name             = var.db_instance_name
+  database_version = var.db_version
+  region           = var.region
+
+  deletion_protection = false
+
+  settings {
+    tier = var.db_tier
+  }
+}
+
+resource "google_sql_user" "db_user" {
+  instance = google_sql_database_instance.db.name
+  name     = var.db_user
+  password = var.db_password
+}
